@@ -2,6 +2,7 @@
 
 Somewhat rough but functional VR mod to allow HS2 VR fun.
 
+Credit to https://github.com/OrangeSpork/HS2VR.
 Credit to killmar-the-3rd for the initial implementation, this builds on his work. https://github.com/killmar-the-3rd/HS2VR
 Credit for the underlying library (VRGIN) goes to Eusth (https://github.com/Eusth/VRGIN) and Ooetksh for their AI-Shoujo version.
 The present Honey Select 2 VR mod is based off (https://github.com/Ooetksh/KoikatuVR). 

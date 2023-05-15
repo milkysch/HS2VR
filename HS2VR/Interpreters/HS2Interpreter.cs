@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using UnityEngine;
 using UnityEngine.PostProcessing;
 using UnityEngine.Rendering.PostProcessing;
@@ -40,6 +41,12 @@ namespace HS2VR.Interpreters
         private bool replaceCamlightWSpotLight;
         bool loaded = false;
 
+        protected override void OnStart()
+        {
+            base.OnStart();
+            FixMenuCanvasLayers();
+        }
+
         protected override void OnAwake()
         {
             base.OnAwake();
@@ -74,7 +81,19 @@ namespace HS2VR.Interpreters
         public void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {            
             VRLog.Info($"Entering Scene {scene.name} Mode {mode}");
+            FixMenuCanvasLayers();
             StartCoroutine(FindCamlight());
+        }
+
+        public void FixMenuCanvasLayers()
+        {
+            foreach (var item in ((IDictionary)typeof(VRGUI).GetField("_Registry", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(VRGUI.Instance)).Keys as
+                ICollection<Canvas>)
+                if (!item.transform.IsChildOf(VR.Camera.Origin.transform) && !IsIgnoredCanvas(item))
+                {
+                    var componentsInChildren = item.GetComponentsInChildren<Transform>(true);
+                    for (var i = 0; i < componentsInChildren.Length; i++) componentsInChildren[i].gameObject.layer = LayerMask.NameToLayer(VR.Context.UILayer);
+                }
         }
 
         public override bool IsIgnoredCanvas(Canvas canvas)

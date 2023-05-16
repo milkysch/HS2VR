@@ -39,6 +39,7 @@ namespace HS2VR.Interpreters
 
         private bool suppressCamlightShadows;
         private bool replaceCamlightWSpotLight;
+        private Fixes.Mirror.Manager _mirrorManager;
         private GameObject CommonSpaceGo;
         bool loaded = false;
 
@@ -58,6 +59,7 @@ namespace HS2VR.Interpreters
             _SceneType = scenes["NoScene"];
             currentSceneInterpreter = new OtherSceneInterpreter();
             SceneManager.sceneLoaded += OnSceneLoaded;
+            _mirrorManager = new Fixes.Mirror.Manager();
         }
 
         protected void OnDestroy()

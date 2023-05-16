@@ -39,6 +39,7 @@ namespace HS2VR.Interpreters
 
         private bool suppressCamlightShadows;
         private bool replaceCamlightWSpotLight;
+        private GameObject CommonSpaceGo;
         bool loaded = false;
 
         protected override void OnStart()
@@ -81,7 +82,9 @@ namespace HS2VR.Interpreters
         public void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {            
             VRLog.Info($"Entering Scene {scene.name} Mode {mode}");
+            if (!CommonSpaceGo) CommonSpaceGo = Manager.Scene.commonSpace;
             FixMenuCanvasLayers();
+            foreach (var reflection in FindObjectsOfType<MirrorReflection>()) _mirrorManager.Fix(reflection);
             StartCoroutine(FindCamlight());
         }
 
@@ -98,7 +101,12 @@ namespace HS2VR.Interpreters
 
         public override bool IsIgnoredCanvas(Canvas canvas)
         {
-            return PrivacyMode.Check(canvas);
+            if ((bool)CommonSpaceGo && canvas.transform.IsChildOf(CommonSpaceGo.transform)) return true;
+            if (PrivacyMode.Check(canvas))
+            {
+                return true;
+            }
+            return base.IsIgnoredCanvas(canvas);
         }
         
         private IEnumerator FindCamlight()
